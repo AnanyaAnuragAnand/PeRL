@@ -1,0 +1,7 @@
+streamlit
+transformers
+torch
+nltk
+feedparser
+sentencepiece
+huggingface-hub
