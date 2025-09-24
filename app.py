@@ -31,7 +31,7 @@ if "answers" not in st.session_state:
 @st.cache_resource
 def load_summarizer():
     return pipeline("summarization", 
-                   model="your-username/t5-finetuned-arxiv", tokenizer="your-username/t5-finetuned-arxiv")  # lightweight, fast
+                   model="ananyaanuraganand/t5-finetuned-arxiv", tokenizer="ananyaanuraganand/t5-finetuned-arxiv")  # lightweight, fast
 
 summarizer = load_summarizer()
 
