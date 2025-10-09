@@ -14,6 +14,7 @@ nltk.download('punkt_tab', quiet=True)
 
 # --- Page configuration ---
 
+# --- Page configuration ---
 st.set_page_config(
     page_title="PeRL: Personalized Research Learning Assistant",
     page_icon="🧠",
@@ -37,16 +38,10 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Color the letters Pe, R, L */
-    .custom-title span.pe {
-        color: #FF69B4;  /* Pink */
-    }
-    .custom-title span.r {
-        color: #FF69B4;  /* Deep Pink */
-    }
-    .custom-title span.l {
-        color: #FF69B4;  /* Pink */
-    }
+    /* Color letters individually */
+    .pe { color: #FF69B4; }   /* Pink */
+    .r { color: #FF1493; }    /* Deep Pink */
+    .l { color: #FF69B4; }    /* Pink */
     </style>
     """,
     unsafe_allow_html=True
@@ -55,9 +50,10 @@ st.markdown(
 # --- Display the custom colored title ---
 st.markdown(
     "<div class='custom-title'>"
-    "<span class='pe'>Pe</span>"
-    "<span class='r'>R</span>"
-    "<span class='l'>L</span>: Personalized Research Learning Assistant"
+    "<span class='pe'>Pe</span><span class='r'>R</span><span class='l'>L</span>: "
+    "<span class='pe'>P</span>ersonalized "
+    "<span class='r'>R</span>esearch "
+    "<span class='l'>L</span>earning Assistant"
     "</div>",
     unsafe_allow_html=True
 )
