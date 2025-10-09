@@ -48,15 +48,27 @@ st.markdown(
 )
 
 # --- Display the custom colored title ---
+# st.markdown(
+#     "<div class='custom-title'>"
+#     "<span class='pe'>Pe</span><span class='r'>R</span><span class='l'>L</span>: "
+#     "<span class='pe'>P</span>ersonalized "
+#     "<span class='r'>R</span>esearch "
+#     "<span class='l'>L</span>earning Assistant"
+#     "</div>",
+#     unsafe_allow_html=True
+# )
+
+
 st.markdown(
     "<div class='custom-title'>"
     "<span class='pe'>Pe</span><span class='r'>R</span><span class='l'>L</span>: "
-    "<span class='pe'>P</span>ersonalized "
-    "<span class='r'>R</span>esearch "
-    "<span class='l'>L</span>earning Assistant"
+    "<span class='pe'>Pe</span>rsonalized "
+    "<span class='r'>R</span>search "
+    "<span class='l'>L</span>arning Assistant"
     "</div>",
     unsafe_allow_html=True
 )
+
 
 st.write("Paste scientific text or fetch papers from arXiv to get adaptive summaries and quizzes.")
 
