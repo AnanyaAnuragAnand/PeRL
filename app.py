@@ -42,7 +42,7 @@ st.markdown(
         color: #FF69B4;  /* Pink */
     }
     .custom-title span.r {
-        color: #FF1493;  /* Deep Pink */
+        color: #FF69B4;  /* Deep Pink */
     }
     .custom-title span.l {
         color: #FF69B4;  /* Pink */
