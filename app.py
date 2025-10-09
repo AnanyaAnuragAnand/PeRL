@@ -12,10 +12,7 @@ import urllib.parse
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 
-st.set_page_config(page_title="PeRL: Personalized Research Learning Assistant", page_icon="🧠")
-
-# st.title("PeRL: Personalized Research Learning Assistant (Open-Source Version)")
-
+# --- Page configuration ---
 
 st.set_page_config(
     page_title="PeRL: Personalized Research Learning Assistant",
@@ -64,23 +61,6 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 st.write("Paste scientific text or fetch papers from arXiv to get adaptive summaries and quizzes.")
 
