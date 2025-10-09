@@ -297,9 +297,21 @@
 #                 summary = " ".join(cleaned_sentences)
 #                 st.markdown(f"**Summary:** {summary}")
 
+
+
+
+
+
 import streamlit as st
 from transformers import pipeline
 import nltk
+
+# Ensure punkt tokenizer is available
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 import random
