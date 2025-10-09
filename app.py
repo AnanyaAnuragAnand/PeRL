@@ -39,9 +39,10 @@ st.markdown(
     }
 
     /* Color letters individually */
-    .pe { color: #FF1493; }   /* Pink */
+    .pe { color: #FF1493; }   /* Deep Pink */
+    .e { color: #FF1493; }   /* Deep Pink */
     .r { color: #FF1493; }    /* Deep Pink */
-    .l { color: #FF1493; }    /* Pink */
+    .l { color: #FF1493; }    /* Deep Pink */
     </style>
     """,
     unsafe_allow_html=True
