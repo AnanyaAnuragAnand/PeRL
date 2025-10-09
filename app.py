@@ -63,8 +63,8 @@ st.markdown(
     "<div class='custom-title'>"
     "<span class='pe'>Pe</span><span class='r'>R</span><span class='l'>L</span>: "
     "<span class='pe'>Pe</span>rsonalized "
-    "<span class='r'>R</span>search "
-    "<span class='l'>L</span>arning Assistant"
+    "<span class='r'>R</span>esearch "
+    "<span class='l'>L</span>earning Assistant"
     "</div>",
     unsafe_allow_html=True
 )
