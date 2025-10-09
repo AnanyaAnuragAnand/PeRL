@@ -14,7 +14,74 @@ nltk.download('punkt_tab', quiet=True)
 
 st.set_page_config(page_title="PeRL: Personalized Research Learning Assistant", page_icon="🧠")
 
-st.title("PeRL: Personalized Research Learning Assistant (Open-Source Version)")
+# st.title("PeRL: Personalized Research Learning Assistant (Open-Source Version)")
+
+
+st.set_page_config(
+    page_title="PeRL: Personalized Research Learning Assistant",
+    page_icon="🧠",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# --- Custom CSS for background and title ---
+st.markdown(
+    """
+    <style>
+    /* Change background color */
+    .stApp {
+        background-color: #FFF9C4;  /* Light yellow */
+    }
+
+    /* Style the main title */
+    .custom-title {
+        font-size: 40px;
+        font-weight: bold;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Color the letters Pe, R, L */
+    .custom-title span.pe {
+        color: #FF69B4;  /* Pink */
+    }
+    .custom-title span.r {
+        color: #FF1493;  /* Deep Pink */
+    }
+    .custom-title span.l {
+        color: #FF69B4;  /* Pink */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- Display the custom colored title ---
+st.markdown(
+    "<div class='custom-title'>"
+    "<span class='pe'>Pe</span>"
+    "<span class='r'>R</span>"
+    "<span class='l'>L</span>: Personalized Research Learning Assistant"
+    "</div>",
+    unsafe_allow_html=True
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 st.write("Paste scientific text or fetch papers from arXiv to get adaptive summaries and quizzes.")
 
 # --- User input ---
