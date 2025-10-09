@@ -297,31 +297,15 @@
 #                 summary = " ".join(cleaned_sentences)
 #                 st.markdown(f"**Summary:** {summary}")
 
-
-
-
 import streamlit as st
 from transformers import pipeline
-import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.corpus import stopwords
+import re
 import random
 import feedparser
 import urllib.parse
 from collections import Counter
 
-# Ensure punkt tokenizer is available
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt', quiet=True)
-
-# Ensure stopwords are available
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords', quiet=True)
-
+# --- Streamlit page config ---
 st.set_page_config(page_title="PeRL: Personalized Research Learning Assistant", page_icon="🧠")
 st.title("PeRL: Personalized Research Learning Assistant (Open-Source Version)")
 st.write("Paste scientific text or fetch papers from arXiv to get adaptive summaries, quizzes, and recommendations.")
@@ -331,23 +315,27 @@ user_text = st.text_area("Paste abstract, methods, or text here:")
 difficulty = st.selectbox("Select your expertise level:", ["Beginner", "Intermediate", "Expert"])
 
 # --- Initialize session state ---
-if "summary" not in st.session_state:
-    st.session_state.summary = ""
-if "quiz" not in st.session_state:
-    st.session_state.quiz = []
-if "user_answers" not in st.session_state:
-    st.session_state.user_answers = {}
-if "score" not in st.session_state:
-    st.session_state.score = None
-if "recommended_papers" not in st.session_state:
-    st.session_state.recommended_papers = []
+for key in ["summary", "quiz", "user_answers", "score", "recommended_papers"]:
+    if key not in st.session_state:
+        st.session_state[key] = {} if key == "user_answers" else [] if key in ["quiz", "recommended_papers"] else None
+
+# --- Regex-based sentence tokenizer ---
+def simple_sent_tokenize(text):
+    sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+    return [s for s in sentences if len(s) > 0]
+
+# --- Simple keyword extraction ---
+def extract_keywords(text, top_n=5):
+    words = re.findall(r'\b[a-zA-Z]{3,}\b', text.lower())
+    freq = Counter(words)
+    return [w for w, _ in freq.most_common(top_n)]
 
 # --- Load summarization model ---
 @st.cache_resource
 def load_summarizer():
-    return pipeline("summarization", 
-                   model="ananyaanuraganand/t5-finetuned-arxiv", 
-                   tokenizer="ananyaanuraganand/t5-finetuned-arxiv")
+    return pipeline("summarization",
+                    model="ananyaanuraganand/t5-finetuned-arxiv",
+                    tokenizer="ananyaanuraganand/t5-finetuned-arxiv")
 
 summarizer = load_summarizer()
 
@@ -375,9 +363,10 @@ def fetch_arxiv_abstracts(query, max_results=5):
 
 # --- Generate MCQ quiz ---
 def generate_mcq_quiz(summary_text, level="Beginner"):
-    sentences = nltk.sent_tokenize(summary_text)
+    sentences = simple_sent_tokenize(summary_text)
     quiz = []
     num_questions = min(5, len(sentences))
+    
     for _ in range(num_questions):
         sent = random.choice(sentences)
         if level == "Beginner":
@@ -396,14 +385,7 @@ def generate_mcq_quiz(summary_text, level="Beginner"):
         quiz.append({"question": question_text, "options": options, "answer": correct_answer})
     return quiz
 
-# --- Extract keywords for arXiv search ---
-def extract_keywords(text, top_n=5):
-    stop_words = set(stopwords.words('english'))
-    words = [w.lower() for w in word_tokenize(text) if w.isalpha() and w.lower() not in stop_words]
-    freq = Counter(words)
-    return [w for w, _ in freq.most_common(top_n)]
-
-# --- Summarize pasted text and generate quiz ---
+# --- Summarize text and generate quiz ---
 if st.button("Summarize"):
     if user_text.strip():
         if difficulty == "Beginner":
@@ -417,11 +399,9 @@ if st.button("Summarize"):
             prompt = "Summarize in detail for an expert: "
         
         raw_summary = summarizer(prompt + user_text, max_length=max_len, min_length=min_len, do_sample=False)[0]['summary_text']
-        sentences = sent_tokenize(raw_summary)
-        cleaned_sentences = [s.strip().capitalize().rstrip(' .') + '.' for s in sentences]
-        summary = " ".join(cleaned_sentences)
+        sentences = simple_sent_tokenize(raw_summary)
+        summary = " ".join([s.strip().capitalize().rstrip(' .') + '.' for s in sentences])
         st.session_state.summary = summary
-
         st.session_state.quiz = generate_mcq_quiz(summary, level=difficulty)
         st.session_state.user_answers = {}
         st.session_state.score = None
@@ -446,7 +426,7 @@ if st.session_state.quiz:
         st.session_state.score = percent_score
         st.success(f"Your quiz score: {percent_score:.1f}%")
 
-        # Suggest further reading if score < 80%
+        # Recommend more papers if score < 80%
         if percent_score < 80:
             st.info("We recommend reading more papers on this topic for better understanding.")
             keywords = extract_keywords(st.session_state.summary)
@@ -471,6 +451,4 @@ if st.session_state.recommended_papers:
         st.write(p['abstract'])
         st.markdown(f"**Summary:** {p['summary']}")
         st.markdown(f"**DOI:** {p['doi']}")
-
-
 
