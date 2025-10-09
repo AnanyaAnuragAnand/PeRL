@@ -300,18 +300,9 @@
 
 
 
-
-
 import streamlit as st
 from transformers import pipeline
 import nltk
-
-# Ensure punkt tokenizer is available
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 import random
@@ -319,9 +310,17 @@ import feedparser
 import urllib.parse
 from collections import Counter
 
-# --- Download necessary NLTK resources ---
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
+# Ensure punkt tokenizer is available
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt', quiet=True)
+
+# Ensure stopwords are available
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords', quiet=True)
 
 st.set_page_config(page_title="PeRL: Personalized Research Learning Assistant", page_icon="🧠")
 st.title("PeRL: Personalized Research Learning Assistant (Open-Source Version)")
