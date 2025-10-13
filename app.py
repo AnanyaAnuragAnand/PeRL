@@ -94,8 +94,8 @@ def fetch_arxiv_abstracts(query, max_results=5):
     Fetches the latest papers from arXiv based on the query.
     Returns a list of dicts: [{'title': ..., 'abstract': ..., 'doi': ...}, ...]
     """
-    query_encoded = urllib.parse.quote(query)  # Encode spaces and special characters
-    base_url = "http://export.arxiv.org/api/query?search_query=all:{}&start=0&max_results={}"
+    query_encoded=urllib.parse.quote(query)
+    base_url = "https://export.arxiv.org/api/query?search_query=all:{}&start=0&max_results={}"
     feed_url = base_url.format(query_encoded, max_results)
     feed = feedparser.parse(feed_url)
     
