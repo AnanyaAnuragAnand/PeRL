@@ -211,3 +211,55 @@ if st.button("Fetch Similar Papers"):
                 st.markdown(f"[View Paper]({paper['url']})")
         else:
             st.info("No papers found for this query.")
+
+##################
+#########
+# --- Install KeyBERT if not already installed ---
+# pip install keybert sentence-transformers
+
+from keybert import KeyBERT
+from sklearn.feature_extraction.text import CountVectorizer
+
+# --- Initialize KeyBERT ---
+kw_model = KeyBERT()
+
+def extract_keywords(text, num_keywords=5):
+    """
+    Extracts the top scientific keywords from user input text using KeyBERT.
+    """
+    if not text.strip():
+        return []
+    keywords = kw_model.extract_keywords(text, keyphrase_ngram_range=(1,2), stop_words='english', top_n=num_keywords)
+    # Extract just the keyword strings
+    return [kw[0] for kw in keywords]
+
+def fetch_papers_by_keywords(text, num_keywords=3, max_results=5):
+    """
+    Extract keywords and fetch papers based on these keywords from Semantic Scholar.
+    """
+    keywords = extract_keywords(text, num_keywords=num_keywords)
+    if not keywords:
+        return [], []
+    
+    # Combine keywords into a single search query
+    query = " ".join(keywords)
+    papers = fetch_semantic_scholar(query, max_results=max_results)
+    return keywords, papers
+
+# --- Streamlit input & display ---
+if st.button("Fetch Papers Based on Keywords"):
+    if user_text.strip():
+        keywords, papers = fetch_papers_by_keywords(user_text, num_keywords=5)
+        if keywords:
+            st.subheader("Extracted Keywords")
+            st.write(", ".join(keywords))
+        
+        if papers:
+            st.subheader("Papers Based on Keywords")
+            for i, paper in enumerate(papers, 1):
+                st.markdown(f"**{i}. {paper['title']}**")
+                st.markdown(f"*Authors:* {paper['authors']}")
+                st.markdown(f"*Abstract:* {paper['abstract']}")
+                st.markdown(f"[View Paper]({paper['url']})")
+        else:
+            st.info("No papers found for the extracted keywords.")
