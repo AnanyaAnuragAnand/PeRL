@@ -13,8 +13,6 @@ nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 
 # --- Page configuration ---
-
-# --- Page configuration ---
 st.set_page_config(
     page_title="PeRL: Personalized Research Learning Assistant",
     page_icon="🧠",
@@ -46,18 +44,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-# --- Display the custom colored title ---
-# st.markdown(
-#     "<div class='custom-title'>"
-#     "<span class='pe'>Pe</span><span class='r'>R</span><span class='l'>L</span>: "
-#     "<span class='pe'>P</span>ersonalized "
-#     "<span class='r'>R</span>esearch "
-#     "<span class='l'>L</span>earning Assistant"
-#     "</div>",
-#     unsafe_allow_html=True
-# )
-
 
 st.markdown(
     "<div class='custom-title'>"
@@ -190,28 +176,6 @@ if st.session_state.quiz:
         selected = st.radio(f"Select your answer:", q["options"], key=f"quiz_{i}")
         if st.button(f"Show Answer {i}", key=f"ans_{i}"):
             st.success(f"✅ Correct answer: {q['answer']}")
-
-# --- Fetch arXiv papers ---
-# st.subheader("Or fetch recent papers from arXiv")
-# arxiv_query = st.text_input("Enter a topic or keyword to search papers:")
-
-# if st.button("Fetch Papers"):
-#     if arxiv_query.strip():
-#         with st.spinner("Fetching papers from arXiv..."):
-#             papers = fetch_arxiv_abstracts(arxiv_query, max_results=5)
-        
-#         if papers:
-#             for i, paper in enumerate(papers, 1):
-#                 st.markdown(f"**Paper {i}: {paper['title']}**")
-#                 st.write(paper['abstract'])
-#                 st.markdown(f"**DOI:** {paper['doi']}")
-#                 # Auto summary
-#                 max_len = 100
-#                 raw_summary = summarizer(paper['abstract'], max_length=max_len, min_length=30, do_sample=False)[0]['summary_text']
-#                 sentences = sent_tokenize(raw_summary)
-#                 cleaned_sentences = [s.strip().capitalize().rstrip(' .') + '.' for s in sentences]
-#                 summary = " ".join(cleaned_sentences)
-#                 st.markdown(f"**Summary:** {summary}")
 
 # --- Fetch arXiv papers ---
 st.subheader("Or fetch recent papers from arXiv")
