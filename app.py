@@ -121,31 +121,6 @@ def fetch_arxiv_abstracts(query, max_results=5):
 
     return papers
 
-# --- Summarize pasted text ---
-if st.button("Summarize"):
-    if user_text.strip():
-        # Summarization length based on expertise
-        if difficulty == "Beginner":
-            max_len, min_len = 60, 30
-            prompt = "Summarize in simple terms for a beginner: "
-        elif difficulty == "Intermediate":
-            max_len, min_len = 120, 50
-            prompt = "Summarize concisely with some technical detail: "
-        else:
-            max_len, min_len = 200, 80
-            prompt = "Summarize in detail for an expert: "
-
-        raw_summary = summarizer(prompt + user_text, max_length=max_len, min_length=min_len, do_sample=False)[0]['summary_text']
-
-        # Clean sentences
-        sentences = sent_tokenize(raw_summary)
-        cleaned_sentences = [s.strip().capitalize().rstrip(' .') + '.' for s in sentences]
-        summary = " ".join(cleaned_sentences)
-        st.session_state.summary = summary
-
-        # Generate MCQs
-        st.session_state.quiz = generate_mcq_quiz(summary, level=difficulty)
-
 # --- Generate MCQ quiz from summary ---
 def generate_mcq_quiz(summary_text, level="Beginner"):
     sentences = nltk.sent_tokenize(summary_text)
@@ -183,6 +158,33 @@ def generate_mcq_quiz(summary_text, level="Beginner"):
             "answer": correct_answer
         })
     return quiz
+
+# --- Summarize pasted text ---
+if st.button("Summarize"):
+    if user_text.strip():
+        # Summarization length based on expertise
+        if difficulty == "Beginner":
+            max_len, min_len = 60, 30
+            prompt = "Summarize in simple terms for a beginner: "
+        elif difficulty == "Intermediate":
+            max_len, min_len = 120, 50
+            prompt = "Summarize concisely with some technical detail: "
+        else:
+            max_len, min_len = 200, 80
+            prompt = "Summarize in detail for an expert: "
+
+        raw_summary = summarizer(prompt + user_text, max_length=max_len, min_length=min_len, do_sample=False)[0]['summary_text']
+
+        # Clean sentences
+        sentences = sent_tokenize(raw_summary)
+        cleaned_sentences = [s.strip().capitalize().rstrip(' .') + '.' for s in sentences]
+        summary = " ".join(cleaned_sentences)
+        st.session_state.summary = summary
+
+        # Generate MCQs
+        st.session_state.quiz = generate_mcq_quiz(summary, level=difficulty)
+
+
 
 # --- Display summary and quiz ---
 if st.session_state.summary:
