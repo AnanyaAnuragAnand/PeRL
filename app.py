@@ -185,27 +185,27 @@ if st.button("Generate Related Paper Suggestions"):
             st.write(f"- {s}")
 
         # Optional: fetch actual papers from arXiv
-        if st.button("Fetch Related Papers from arXiv"):
-            with st.spinner("Fetching related papers from arXiv..."):
-                def fetch_arxiv_for_suggestions(suggestions, max_results_per_suggestion=3):
-                    all_papers = []
-                    for term in suggestions:
-                        query_encoded = urllib.parse.quote(term)
-                        feed_url = f"http://export.arxiv.org/api/query?search_query=all:{query_encoded}&start=0&max_results={max_results_per_suggestion}"
-                        feed = feedparser.parse(feed_url)
-                        for entry in feed.entries:
-                            title = entry.title
-                            abstract = entry.summary.replace('\n', ' ').strip()
-                            doi = entry.get('arxiv_doi', 'N/A')
-                            all_papers.append({"title": title, "abstract": abstract, "doi": doi, "term": term})
-                    return all_papers
+    if st.button("Fetch Related Papers from arXiv"):
+        with st.spinner("Fetching related papers from arXiv..."):
+            def fetch_arxiv_for_suggestions(suggestions, max_results_per_suggestion=3):
+                all_papers = []
+                for term in suggestions:
+                    query_encoded = urllib.parse.quote(term)
+                    feed_url = f"http://export.arxiv.org/api/query?search_query=all:{query_encoded}&start=0&max_results={max_results_per_suggestion}"
+                    feed = feedparser.parse(feed_url)
+                    for entry in feed.entries:
+                        title = entry.title
+                        abstract = entry.summary.replace('\n', ' ').strip()
+                        doi = entry.get('arxiv_doi', 'N/A')
+                        all_papers.append({"title": title, "abstract": abstract, "doi": doi, "term": term})
+                return all_papers
 
-                related_papers = fetch_arxiv_for_suggestions(related_suggestions, max_results_per_suggestion=2)
+            related_papers = fetch_arxiv_for_suggestions(related_suggestions, max_results_per_suggestion=2)
 
-            st.write("Fetched papers from arXiv based on suggestions:")
-            for i, paper in enumerate(related_papers, 1):
-                st.markdown(f"**Paper {i} (from suggestion: {paper['term']}): {paper['title']}**")
-                st.write(paper['abstract'])
-                st.markdown(f"**DOI:** {paper['doi']}")
-    else:
-        st.warning("Please summarize some text first to generate suggestions.")
+        st.write("Fetched papers from arXiv based on suggestions:")
+        for i, paper in enumerate(related_papers, 1):
+            st.markdown(f"**Paper {i} (from suggestion: {paper['term']}): {paper['title']}**")
+            st.write(paper['abstract'])
+            st.markdown(f"**DOI:** {paper['doi']}")
+else:
+    st.warning("Please summarize some text first to generate suggestions.")
