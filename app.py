@@ -89,7 +89,7 @@ qg_pipeline = load_qg_pipeline()
 
 # --- Generate MCQ quiz from summary ---
 def generate_mcq_quiz(summary_text, level="Beginner"):
-    sentences = nltk.sent_tokenize(summary_text)
+    sentences = nltk.sent_tokenize(user_text)
     quiz = []
 
     # Determine number of questions
@@ -104,7 +104,7 @@ def generate_mcq_quiz(summary_text, level="Beginner"):
         elif level == "Intermediate":
             q_prompt = f"Generate question based on: {sent}"
         else:
-            q_prompt = f"Generate a challenging conceptual question for experts based on: {sent}"
+            q_prompt = f"Generate question based on: {sent}"
 
         question_text = qg_pipeline(q_prompt, max_length=64, num_return_sequences=1)[0]['generated_text']
 
