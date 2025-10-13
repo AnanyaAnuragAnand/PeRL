@@ -86,39 +86,24 @@ def load_qg_pipeline():
 qg_pipeline = load_qg_pipeline()
 
 # --- Function to fetch arXiv papers with DOI support (Fixed) ---
+# --- Function to fetch arXiv papers with DOI support ---
 def fetch_arxiv_abstracts(query, max_results=5):
     """
     Fetches the latest papers from arXiv based on the query.
     Returns a list of dicts: [{'title': ..., 'abstract': ..., 'doi': ...}, ...]
     """
-    # Properly encode the query
-    query_encoded = urllib.parse.quote(query)
-    feed_url = f"http://export.arxiv.org/api/query?search_query=all:{query_encoded}&start=0&max_results={max_results}"
-
-    # Parse the RSS feed
+    query_encoded = urllib.parse.quote(query)  # Encode spaces and special characters
+    base_url = "http://export.arxiv.org/api/query?search_query=all:{}&start=0&max_results={}"
+    feed_url = base_url.format(query_encoded, max_results)
     feed = feedparser.parse(feed_url)
-
+    
     papers = []
     for entry in feed.entries:
         title = entry.title
         abstract = entry.summary.replace('\n', ' ').strip()
-
-        # --- More reliable DOI extraction ---
-        doi = entry.get('arxiv_doi', None)
-        if not doi and 'links' in entry:
-            for link in entry.links:
-                if link.rel == 'related':
-                    doi = link.href
-                    break
-        if not doi:
-            doi = 'N/A'
-
-        papers.append({
-            "title": title,
-            "abstract": abstract,
-            "doi": doi
-        })
-
+        doi = entry.get('arxiv_doi', 'N/A')  # DOI if available
+        papers.append({"title": title, "abstract": abstract, "doi": doi})
+    
     return papers
 
 # --- Generate MCQ quiz from summary ---
@@ -222,4 +207,3 @@ if st.button("Fetch Papers"):
                 summary = " ".join(cleaned_sentences)
                 
                 st.markdown(f"**Summary:** {summary}")
-
