@@ -229,16 +229,21 @@ def extract_keywords(text, num_keywords=5):
     """
     if not text.strip():
         return []
-    keywords = kw_model.extract_keywords(text, keyphrase_ngram_range=(1,2), stop_words='english', top_n=num_keywords)
+    keywords = kw_model.extract_keywords(
+        text, 
+        keyphrase_ngram_range=(1, 2), 
+        stop_words='english', 
+        top_n=num_keywords
+    )
     # Extract just the keyword strings
     return [kw[0] for kw in keywords]
 
 def fetch_papers_by_keywords_better(text, num_keywords=5, max_per_keyword=3):
     """
-    Extract keywords, query Semantic Scholar for each keyword separately,
+    Extract keywords using KeyBERT, query Semantic Scholar for each keyword separately,
     and combine the results to display.
     """
-    keywords = extract_keywords_simple(text, num_keywords=num_keywords)
+    keywords = extract_keywords(text, num_keywords=num_keywords)
     if not keywords:
         return [], []
 
@@ -248,13 +253,13 @@ def fetch_papers_by_keywords_better(text, num_keywords=5, max_per_keyword=3):
     for kw in keywords:
         papers = fetch_semantic_scholar(kw, max_results=max_per_keyword)
         for p in papers:
-            # Avoid duplicates based on title
             if p['title'] not in seen_titles:
                 all_papers.append(p)
                 seen_titles.add(p['title'])
 
     return keywords, all_papers
-# --- Streamlit input & display ---
+
+# --- Streamlit section ---
 if st.button("Fetch Papers Based on Keywords"):
     if user_text.strip():
         keywords, papers = fetch_papers_by_keywords_better(user_text, num_keywords=5)
@@ -270,4 +275,4 @@ if st.button("Fetch Papers Based on Keywords"):
                 st.markdown(f"[View Paper]({paper['url']})")
         else:
             st.info("No papers found for the extracted keywords.")
-            
+
