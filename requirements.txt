@@ -5,3 +5,5 @@ nltk
 feedparser
 sentencepiece
 huggingface-hub
+keybert
+sentence-transformers
