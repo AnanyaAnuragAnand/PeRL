@@ -86,8 +86,27 @@ def load_qg_pipeline():
 qg_pipeline = load_qg_pipeline()
 
 # --- Function to fetch arXiv papers ---
+# def fetch_arxiv_abstracts(query, max_results=5):
+#     query_encoded = urllib.parse.quote(query)
+#     base_url = "http://export.arxiv.org/api/query?search_query=all:{}&start=0&max_results={}"
+#     feed_url = base_url.format(query_encoded, max_results)
+#     feed = feedparser.parse(feed_url)
+    
+#     papers = []
+#     for entry in feed.entries:
+#         title = entry.title
+#         abstract = entry.summary.replace('\n', ' ').strip()
+#         doi = entry.get('arxiv_doi', 'N/A')
+#         papers.append({"title": title, "abstract": abstract, "doi": doi})
+    
+#     return papers
+# --- Function to fetch arXiv papers with DOI support ---
 def fetch_arxiv_abstracts(query, max_results=5):
-    query_encoded = urllib.parse.quote(query)
+    """
+    Fetches the latest papers from arXiv based on the query.
+    Returns a list of dicts: [{'title': ..., 'abstract': ..., 'doi': ...}, ...]
+    """
+    query_encoded = urllib.parse.quote(query)  # Encode spaces and special characters
     base_url = "http://export.arxiv.org/api/query?search_query=all:{}&start=0&max_results={}"
     feed_url = base_url.format(query_encoded, max_results)
     feed = feedparser.parse(feed_url)
@@ -96,7 +115,7 @@ def fetch_arxiv_abstracts(query, max_results=5):
     for entry in feed.entries:
         title = entry.title
         abstract = entry.summary.replace('\n', ' ').strip()
-        doi = entry.get('arxiv_doi', 'N/A')
+        doi = entry.get('arxiv_doi', 'N/A')  # DOI if available
         papers.append({"title": title, "abstract": abstract, "doi": doi})
     
     return papers
