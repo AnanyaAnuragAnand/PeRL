@@ -219,27 +219,27 @@ if st.session_state.quiz:
         if st.button(f"Show Answer {i}", key=f"ans_{i}"):
             st.success(f"✅ Correct answer: {q['answer']}")
 
-# --- Fetch arXiv papers ---
-st.subheader("Or fetch recent papers from arXiv")
-arxiv_query = st.text_input("Enter a topic or keyword to search papers:")
+# # --- Fetch arXiv papers ---
+# st.subheader("Or fetch recent papers from arXiv")
+# arxiv_query = st.text_input("Enter a topic or keyword to search papers:")
 
-if st.button("Fetch Papers"):
-    if arxiv_query.strip():
-        with st.spinner("Fetching papers from arXiv..."):
-            papers = fetch_arxiv_abstracts(arxiv_query, max_results=5)
+# if st.button("Fetch Papers"):
+#     if arxiv_query.strip():
+#         with st.spinner("Fetching papers from arXiv..."):
+#             papers = fetch_arxiv_abstracts(arxiv_query, max_results=5)
         
-        if papers:
-            for i, paper in enumerate(papers, 1):
-                st.markdown(f"**Paper {i}: {paper['title']}**")
-                st.write(paper['abstract'])
-                st.markdown(f"**DOI:** {paper['doi']}")  # Display DOI
+#         if papers:
+#             for i, paper in enumerate(papers, 1):
+#                 st.markdown(f"**Paper {i}: {paper['title']}**")
+#                 st.write(paper['abstract'])
+#                 st.markdown(f"**DOI:** {paper['doi']}")  # Display DOI
 
-                # Automatic summary
-                max_len = 100
-                raw_summary = summarizer(paper['abstract'], max_length=max_len, min_length=30, do_sample=False)[0]['summary_text']
-                sentences = sent_tokenize(raw_summary)
-                cleaned_sentences = [s.strip().capitalize().rstrip(' .') + '.' for s in sentences]
-                summary = " ".join(cleaned_sentences)
+#                 # Automatic summary
+#                 max_len = 100
+#                 raw_summary = summarizer(paper['abstract'], max_length=max_len, min_length=30, do_sample=False)[0]['summary_text']
+#                 sentences = sent_tokenize(raw_summary)
+#                 cleaned_sentences = [s.strip().capitalize().rstrip(' .') + '.' for s in sentences]
+#                 summary = " ".join(cleaned_sentences)
                 
-                st.markdown(f"**Summary:** {summary}")
+#                 st.markdown(f"**Summary:** {summary}")
                 
