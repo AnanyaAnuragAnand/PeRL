@@ -100,9 +100,9 @@ def generate_mcq_quiz(summary_text, level="Beginner"):
 
         # QG prompt based on level
         if level == "Beginner":
-            q_prompt = f"Generate a simple factual question for a beginner based on: {sent}"
+            q_prompt = f"Generate question based on: {sent}"
         elif level == "Intermediate":
-            q_prompt = f"Generate a multiple choice question with some technical detail based on: {sent}"
+            q_prompt = f"Generate question based on: {sent}"
         else:
             q_prompt = f"Generate a challenging conceptual question for experts based on: {sent}"
 
