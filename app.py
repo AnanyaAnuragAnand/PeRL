@@ -147,8 +147,8 @@ if st.button("Summarize"):
         st.session_state.quiz = generate_mcq_quiz(summary, level=difficulty)
 
 # --- Generate MCQ quiz from summary ---
-def generate_mcq_quiz(summary, level="Beginner"):
-    sentences = nltk.sent_tokenize(summary)
+def generate_mcq_quiz(summary_text, level="Beginner"):
+    sentences = nltk.sent_tokenize(summary_text)
     quiz = []
 
     # Determine number of questions
