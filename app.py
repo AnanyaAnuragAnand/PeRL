@@ -223,20 +223,52 @@ from sklearn.feature_extraction.text import CountVectorizer
 # --- Initialize KeyBERT ---
 kw_model = KeyBERT()
 
-def extract_keywords(text, num_keywords=5):
+# def extract_keywords(text, num_keywords=5):
+#     """
+#     Extracts the top scientific keywords from user input text using KeyBERT.
+#     """
+#     if not text.strip():
+#         return []
+#     keywords = kw_model.extract_keywords(
+#         text, 
+#         keyphrase_ngram_range=(1, 2), 
+#         stop_words='english', 
+#         top_n=num_keywords
+#     )
+#     # Extract just the keyword strings
+#     return [kw[0] for kw in keywords]
+import re
+from sklearn.feature_extraction.text import CountVectorizer
+
+def extract_keywords_simple(text, num_keywords=5):
     """
-    Extracts the top scientific keywords from user input text using KeyBERT.
+    A lightweight keyword extractor that picks the most frequent scientific terms.
+    Useful as a fallback if KeyBERT is unavailable or to avoid heavy computation.
     """
-    if not text.strip():
+    if not text or not text.strip():
         return []
-    keywords = kw_model.extract_keywords(
-        text, 
-        keyphrase_ngram_range=(1, 2), 
-        stop_words='english', 
-        top_n=num_keywords
-    )
-    # Extract just the keyword strings
-    return [kw[0] for kw in keywords]
+
+    # Basic cleanup
+    cleaned_text = re.sub(r'[^a-zA-Z0-9\s-]', ' ', text.lower())
+
+    # Use CountVectorizer to extract top frequent words and 2-word phrases
+    vectorizer = CountVectorizer(ngram_range=(1, 2), stop_words='english').fit([cleaned_text])
+    bag_of_words = vectorizer.transform([cleaned_text])
+
+    # Get frequencies
+    sum_words = bag_of_words.sum(axis=0)
+    words_freq = [(word, sum_words[0, idx]) for word, idx in vectorizer.vocabulary_.items()]
+    sorted_words = sorted(words_freq, key=lambda x: x[1], reverse=True)
+
+    # Take top N keywords (remove duplicates and extra spaces)
+    keywords = []
+    for word, freq in sorted_words:
+        if word not in keywords:
+            keywords.append(word.strip())
+        if len(keywords) >= num_keywords:
+            break
+
+    return keywords
 
 # def fetch_papers_by_keywords_better(text, num_keywords=5, max_per_keyword=3):
 #     """
