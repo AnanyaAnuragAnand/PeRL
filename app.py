@@ -10,7 +10,7 @@ import urllib.parse
 
 # --- Download necessary NLTK resources ---
 nltk.download('punkt', quiet=True)
-# nltk.download('punkt_tab', quiet=True)
+nltk.download('punkt_tab', quiet=True)
 
 # --- Page configuration ---
 
