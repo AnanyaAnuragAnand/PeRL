@@ -233,27 +233,34 @@ def extract_keywords(text, num_keywords=5):
     # Extract just the keyword strings
     return [kw[0] for kw in keywords]
 
-def fetch_papers_by_keywords(text, num_keywords=3, max_results=5):
+def fetch_papers_by_keywords_better(text, num_keywords=5, max_per_keyword=3):
     """
-    Extract keywords and fetch papers based on these keywords from Semantic Scholar.
+    Extract keywords, query Semantic Scholar for each keyword separately,
+    and combine the results to display.
     """
-    keywords = extract_keywords(text, num_keywords=num_keywords)
+    keywords = extract_keywords_simple(text, num_keywords=num_keywords)
     if not keywords:
         return [], []
-    
-    # Combine keywords into a single search query
-    query = " ".join(keywords)
-    papers = fetch_semantic_scholar(query, max_results=max_results)
-    return keywords, papers
 
+    all_papers = []
+    seen_titles = set()
+
+    for kw in keywords:
+        papers = fetch_semantic_scholar(kw, max_results=max_per_keyword)
+        for p in papers:
+            # Avoid duplicates based on title
+            if p['title'] not in seen_titles:
+                all_papers.append(p)
+                seen_titles.add(p['title'])
+
+    return keywords, all_papers
 # --- Streamlit input & display ---
 if st.button("Fetch Papers Based on Keywords"):
     if user_text.strip():
-        keywords, papers = fetch_papers_by_keywords(user_text, num_keywords=5)
+        keywords, papers = fetch_papers_by_keywords_better(user_text, num_keywords=5)
         if keywords:
             st.subheader("Extracted Keywords")
             st.write(", ".join(keywords))
-        
         if papers:
             st.subheader("Papers Based on Keywords")
             for i, paper in enumerate(papers, 1):
@@ -263,3 +270,4 @@ if st.button("Fetch Papers Based on Keywords"):
                 st.markdown(f"[View Paper]({paper['url']})")
         else:
             st.info("No papers found for the extracted keywords.")
+            
