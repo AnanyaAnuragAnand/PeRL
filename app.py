@@ -185,13 +185,11 @@ if st.session_state.quiz:
             st.success(f"✅ Correct answer: {q['answer']}")
 
 # --- Fetch arXiv papers ---
-st.subheader("Or fetch recent papers from arXiv")
-arxiv_query = st.text_input("Enter a topic or keyword to search papers:")
+with st.form("arxiv_form"):
+    arxiv_query = st.text_input("Enter a topic or keyword to search papers:")
+    fetch_submit = st.form_submit_button("Fetch Papers")
 
-if st.button("Fetch Papers"):
-    st.session_state.fetch_clicked = True
-    
-if st.session_state.fetch_clicked and arxiv_query.strip():
+if fetch_submit and arxiv_query.strip():
     with st.spinner("Fetching papers from arXiv..."):
         papers = fetch_arxiv_abstracts(arxiv_query, max_results=5)
 
