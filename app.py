@@ -238,26 +238,70 @@ def extract_keywords(text, num_keywords=5):
     # Extract just the keyword strings
     return [kw[0] for kw in keywords]
 
-def fetch_papers_by_keywords_better(text, num_keywords=5, max_per_keyword=3):
+# def fetch_papers_by_keywords_better(text, num_keywords=5, max_per_keyword=3):
+#     """
+#     Extract keywords using KeyBERT, query Semantic Scholar for each keyword separately,
+#     and combine the results to display.
+#     """
+#     keywords = extract_keywords(text, num_keywords=num_keywords)
+#     if not keywords:
+#         return [], []
+
+#     all_papers = []
+#     seen_titles = set()
+
+#     for kw in keywords:
+#         papers = fetch_semantic_scholar(kw, max_results=max_per_keyword)
+#         for p in papers:
+#             if p['title'] not in seen_titles:
+#                 all_papers.append(p)
+#                 seen_titles.add(p['title'])
+
+#     return keywords, all_papers
+
+import requests
+import time
+import logging
+import streamlit as st
+
+def fetch_papers_by_keywords_better(text, num_keywords=5, limit=3, delay=1):
     """
-    Extract keywords using KeyBERT, query Semantic Scholar for each keyword separately,
-    and combine the results to display.
+    Fetch papers from Semantic Scholar using multiple keywords.
+    Handles 429 errors gracefully and shows a single friendly warning.
     """
-    keywords = extract_keywords(text, num_keywords=num_keywords)
-    if not keywords:
-        return [], []
+    # --- Extract keywords ---
+    keywords = extract_keywords_simple(text, num_keywords=num_keywords)
 
     all_papers = []
-    seen_titles = set()
+    rate_limit_hit = False  # to warn user only once
 
-    for kw in keywords:
-        papers = fetch_semantic_scholar(kw, max_results=max_per_keyword)
-        for p in papers:
-            if p['title'] not in seen_titles:
-                all_papers.append(p)
-                seen_titles.add(p['title'])
+    for keyword in keywords:
+        url = f"https://api.semanticscholar.org/graph/v1/paper/search?query={keyword}&limit={limit}&fields=title,authors,abstract,url"
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            papers = data.get("data", [])
+            all_papers.extend(papers)
+
+        except requests.exceptions.HTTPError as e:
+            # Handle 429 rate limit gracefully
+            if response.status_code == 429:
+                logging.warning(f"[Rate limit] Keyword '{keyword}' was rate-limited.")
+                if not rate_limit_hit:
+                    st.warning("Some searches were rate-limited by Semantic Scholar. Please wait a moment or try again later.")
+                    rate_limit_hit = True
+            else:
+                logging.error(f"HTTP error for '{keyword}': {e}")
+
+        except Exception as e:
+            logging.error(f"Unexpected error for '{keyword}': {e}")
+
+        # Add a small delay to avoid rapid-fire requests (important for free APIs)
+        time.sleep(delay)
 
     return keywords, all_papers
+
 
 # --- Streamlit section ---
 if st.button("Fetch Papers Based on Keywords"):
