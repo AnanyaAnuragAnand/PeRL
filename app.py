@@ -342,13 +342,39 @@ if st.button("Fetch Papers Based on Keywords"):
         if keywords:
             st.subheader("Extracted Keywords")
             st.write(", ".join(keywords))
+        # if papers:
+        #     st.subheader("Papers Based on Keywords")
+        #     for i, paper in enumerate(papers, 1):
+        #         st.markdown(f"**{i}. {paper['title']}**")
+        #         st.markdown(f"*Authors:* {paper['authors']}")
+        #         st.markdown(f"*Abstract:* {paper['abstract']}")
+        #         st.markdown(f"[View Paper]({paper['url']})")
+        # else:
+        #     st.info("No papers found for the extracted keywords.")
         if papers:
-            st.subheader("Papers Based on Keywords")
-            for i, paper in enumerate(papers, 1):
-                st.markdown(f"**{i}. {paper['title']}**")
-                st.markdown(f"*Authors:* {paper['authors']}")
-                st.markdown(f"*Abstract:* {paper['abstract']}")
-                st.markdown(f"[View Paper]({paper['url']})")
+    st.subheader("Papers Based on Keywords")
+    for i, paper in enumerate(papers, 1):
+        title = paper.get("title", "No title")
+        authors = paper.get("authors", [])
+        abstract = paper.get("abstract", None)
+        url = paper.get("url", "#")
+
+        # Format author names as a clean comma-separated string
+        author_names = ", ".join([a.get("name", "") for a in authors])
+
+        st.markdown(f"**{i}. {title}**")
+        if author_names:
+            st.markdown(f"*Authors:* {author_names}")
         else:
-            st.info("No papers found for the extracted keywords.")
+            st.markdown("*Authors:* Not available")
+
+        if abstract:
+            st.markdown(f"*Abstract:* {abstract}")
+        else:
+            st.markdown("*Abstract:* Not available")
+
+        st.markdown(f"[View Paper]({url})")
+        st.markdown("---")
+else:
+    st.info("No papers found for the extracted keywords.")
 
