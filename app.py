@@ -163,54 +163,54 @@ if st.session_state.quiz:
         if st.button(f"Show Answer {i}", key=f"ans_{i}"):
             st.success(f"✅ Correct answer: {q['answer']}")
 
-# --- Fetch similar research papers using Semantic Scholar ---
-import requests
+# # --- Fetch similar research papers using Semantic Scholar ---
+# import requests
 
-def fetch_semantic_scholar(query, max_results=5):
-    """
-    Fetch similar papers from Semantic Scholar API based on query text.
-    Returns a list of dicts with title, authors, abstract, and url.
-    """
-    base_url = "https://api.semanticscholar.org/graph/v1/paper/search"
-    params = {
-        "query": query,
-        "limit": max_results,
-        "fields": "title,authors,abstract,url"
-    }
-    try:
-        response = requests.get(base_url, params=params)
-        response.raise_for_status()
-        data = response.json()
-        papers = []
-        for item in data.get("data", []):
-            paper = {
-                "title": item.get("title", "No title"),
-                "authors": ", ".join([a.get("name", "") for a in item.get("authors", [])]),
-                "abstract": item.get("abstract", "No abstract available"),
-                "url": item.get("url", "#")
-            }
-            papers.append(paper)
-        return papers
-    except Exception as e:
-        st.error(f"Error fetching papers: {e}")
-        return []
+# def fetch_semantic_scholar(query, max_results=5):
+#     """
+#     Fetch similar papers from Semantic Scholar API based on query text.
+#     Returns a list of dicts with title, authors, abstract, and url.
+#     """
+#     base_url = "https://api.semanticscholar.org/graph/v1/paper/search"
+#     params = {
+#         "query": query,
+#         "limit": max_results,
+#         "fields": "title,authors,abstract,url"
+#     }
+#     try:
+#         response = requests.get(base_url, params=params)
+#         response.raise_for_status()
+#         data = response.json()
+#         papers = []
+#         for item in data.get("data", []):
+#             paper = {
+#                 "title": item.get("title", "No title"),
+#                 "authors": ", ".join([a.get("name", "") for a in item.get("authors", [])]),
+#                 "abstract": item.get("abstract", "No abstract available"),
+#                 "url": item.get("url", "#")
+#             }
+#             papers.append(paper)
+#         return papers
+#     except Exception as e:
+#         st.error(f"Error fetching papers: {e}")
+#         return []
 
-# --- User input for fetching similar papers ---
-fetch_query = st.text_input("Enter topic or text to fetch similar papers:")
+# # --- User input for fetching similar papers ---
+# fetch_query = st.text_input("Enter topic or text to fetch similar papers:")
 
-if st.button("Fetch Similar Papers"):
-    if fetch_query.strip():
-        st.session_state.fetch_clicked = True
-        fetched_papers = fetch_semantic_scholar(fetch_query)
-        if fetched_papers:
-            st.subheader("Similar Papers")
-            for i, paper in enumerate(fetched_papers, 1):
-                st.markdown(f"**{i}. {paper['title']}**")
-                st.markdown(f"*Authors:* {paper['authors']}")
-                st.markdown(f"*Abstract:* {paper['abstract']}")
-                st.markdown(f"[View Paper]({paper['url']})")
-        else:
-            st.info("No papers found for this query.")
+# if st.button("Fetch Similar Papers"):
+#     if fetch_query.strip():
+#         st.session_state.fetch_clicked = True
+#         fetched_papers = fetch_semantic_scholar(fetch_query)
+#         if fetched_papers:
+#             st.subheader("Similar Papers")
+#             for i, paper in enumerate(fetched_papers, 1):
+#                 st.markdown(f"**{i}. {paper['title']}**")
+#                 st.markdown(f"*Authors:* {paper['authors']}")
+#                 st.markdown(f"*Abstract:* {paper['abstract']}")
+#                 st.markdown(f"[View Paper]({paper['url']})")
+#         else:
+#             st.info("No papers found for this query.")
 
 ##################
 #########
