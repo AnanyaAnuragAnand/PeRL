@@ -88,7 +88,7 @@ def load_qg_pipeline():
 qg_pipeline = load_qg_pipeline()
 
 # --- Generate MCQ quiz from summary ---
-def generate_mcq_quiz(summary_text, level="Beginner"):
+def generate_mcq_quiz(user_text, level="Beginner"):
     sentences = nltk.sent_tokenize(user_text)
     quiz = []
 
