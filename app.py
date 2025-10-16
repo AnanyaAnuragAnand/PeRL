@@ -56,7 +56,7 @@ st.markdown(
 )
 
 
-st.write("Paste scientific text or fetch papers from arXiv to get adaptive summaries and quizzes.")
+st.write("Paste scientific text to achieve adaptive summaries, quizzes and important literature.")
 
 # --- User input ---
 user_text = st.text_area("Paste abstract, methods, or text here:")
