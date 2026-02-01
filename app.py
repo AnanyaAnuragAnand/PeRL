@@ -73,7 +73,7 @@ if "fetch_clicked" not in st.session_state:
 # --- Load summarization model ---
 @st.cache_resource
 def load_summarizer():
-    return pipeline("summarization", 
+    return pipeline("text2text-generation", 
                    model="ananyaanuraganand/t5-finetuned-arxiv", 
                    tokenizer="ananyaanuraganand/t5-finetuned-arxiv")
 
@@ -139,7 +139,7 @@ if st.button("Summarize"):
             max_len, min_len = 200, 80
             prompt = "Summarize in detail for an expert: "
 
-        raw_summary = summarizer(prompt + user_text, max_length=max_len, min_length=min_len, do_sample=False)[0]['summary_text']
+        raw_summary = summarizer(prompt + user_text, max_length=max_len, min_length=min_len, do_sample=False)[0]['generated_text']
 
         # Clean sentences
         sentences = sent_tokenize(raw_summary)
